@@ -18,14 +18,14 @@ DEL      = del
 objects = palette.obj utilfunc.obj bootpack.obj graphic.obj hankaku.obj int.obj fifo.obj \
 	keyboard.obj mouse.obj memory.obj
 
-ipl.bin: ipl.nas Makefile
-	$(NASK) ipl.nas ipl.bin
+ipl.bin: src/asm/ipl.nas Makefile
+	$(NASK) src/asm/ipl.nas ipl.bin
 
-tos.bin: tos.nas Makefile
-	$(NASK) tos.nas tos.bin
+tos.bin: src/asm/tos.nas Makefile
+	$(NASK) src/asm/tos.nas tos.bin
 
-%.gas : %.c Makefile
-	$(CC1) -o $*.gas $*.c
+%.gas : src/%.c Makefile
+	$(CC1) -o $*.gas src/$*.c
 
 %.nas : %.gas Makefile
 	$(GAS2NASK) $*.gas $*.nas
@@ -33,8 +33,11 @@ tos.bin: tos.nas Makefile
 %.obj : %.nas Makefile
 	$(NASK) $*.nas $*.obj
 
-hankaku.bin : hankaku.txt Makefile
-	$(MAKEFONT) hankaku.txt hankaku.bin
+utilfunc.obj: src/asm/utilfunc.nas Makefile 
+	$(NASK) src/asm/utilfunc.nas utilfunc.obj
+
+hankaku.bin : res/hankaku.txt Makefile
+	$(MAKEFONT) res/hankaku.txt hankaku.bin
 
 hankaku.obj : hankaku.bin Makefile
 	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
@@ -80,4 +83,5 @@ clean :
 	-$(DEL) bootpack.map
 	-$(DEL) bootpack.bim
 	-$(DEL) bootpack.hrb
-	-$(DEL) haribote.sys
+	-$(DEL) tos.sys
+	-$(DEL) tos.img
